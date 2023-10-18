@@ -3,19 +3,122 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id             Int      @id @default(autoincrement())
-  id_auth0       String   @unique
-  name           String
-  nickname       String
-  username       String   @unique
-  email          String   @unique
-  email_verified Boolean  @default(false)
-  picture        String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id               Int                @id @default(autoincrement())
+  id_auth0         String             @unique
+  name             String
+  nickname         String
+  username         String             @unique
+  email            String             @unique
+  email_verified   Boolean            @default(false)
+  picture          String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  UserRole         UserRole[]
+  Auction          Auction[]
+  Bid              Bid[]
+  AuctionBidWinner AuctionBidWinner[]
+  UserPlan         UserPlan[]
+}
+
+model Role {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  description String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  UserRole    UserRole[]
+}
+
+model UserRole {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [user_id], references: [id])
+  user_id   Int
+  role      Role     @relation(fields: [role_id], references: [id])
+  role_id   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Auction {
+  id               Int                @id @default(autoincrement())
+  user             User               @relation(fields: [user_id], references: [id])
+  user_id          Int
+  name             String
+  description      String
+  start            DateTime
+  end              DateTime
+  weight           Float
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  Bid              Bid[]
+  AuctionImage     AuctionImage[]
+  Category         Category?          @relation(fields: [category_id], references: [id])
+  category_id      Int?
+  AuctionBidWinner AuctionBidWinner[]
+}
+
+model AuctionImage {
+  id         Int      @id @default(autoincrement())
+  auction    Auction  @relation(fields: [auction_id], references: [id])
+  auction_id Int
+  url        String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Auction   Auction[]
+}
+
+model Bid {
+  id         Int      @id @default(autoincrement())
+  auction    Auction  @relation(fields: [auction_id], references: [id])
+  auction_id Int
+  user       User     @relation(fields: [user_id], references: [id])
+  user_id    Int
+  amount     Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model AuctionBidWinner {
+  id         Int      @id @default(autoincrement())
+  auction    Auction  @relation(fields: [auction_id], references: [id])
+  auction_id Int
+  user       User     @relation(fields: [user_id], references: [id])
+  user_id    Int
+  amount     Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Plan {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  price     Float
+  days      Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  UserPlan  UserPlan[]
+}
+
+model UserPlan {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [user_id], references: [id])
+  user_id   Int
+  plan      Plan     @relation(fields: [plan_id], references: [id])
+  plan_id   Int
+  initial   DateTime
+  final     DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

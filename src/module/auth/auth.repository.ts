@@ -6,7 +6,7 @@ export class AuthRepository {
   constructor() {
     this.prisma = new PrismaClient();
   }
-  
+
   public createUser = async (auth0User: any) => {
     const user = await this.prisma.user.create({
       data: {

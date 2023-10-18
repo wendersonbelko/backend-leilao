@@ -3,12 +3,15 @@ import { AuthService } from "./auth.service";
 import { Result } from "../../handler/response";
 import { HttpStatusClientError, HttpStatusSuccess } from "../../enum/HttpStatusCodes.enum";
 import { userLogin, userRegister } from "../../validator/user.validator";
+import { UserService } from "../user/user.service";
 
-class AuthController  {
+class AuthController {
   private authService: AuthService;
+  private userServices: UserService;
 
   constructor() {
     this.authService = new AuthService();
+    this.userServices = new UserService();
   }
 
   public login = async (req: Request, res: Response) => {
@@ -24,7 +27,9 @@ class AuthController  {
       );
     }
 
-    const token = this.authService.generateTokenJWT(tokenAuth0);
+    const user = await this.userServices.FindByUsername(payload.username);
+
+    const token = this.authService.generateTokenJWT(tokenAuth0, user!);
 
     res.setHeader('Authorization', `Bearer ${token}`);
 
@@ -50,7 +55,7 @@ class AuthController  {
 
     const user = await this.authService.createAccount(payload.data);
 
-    if(user === 400) {
+    if (user === 400) {
       return new Result().handler(
         'ERROR',
         HttpStatusClientError.BadRequest,
@@ -59,7 +64,7 @@ class AuthController  {
       );
     }
 
-    if(user === 401) {
+    if (user === 401) {
       return new Result().handler(
         'ERROR',
         HttpStatusClientError.Unauthorized,
@@ -68,7 +73,7 @@ class AuthController  {
       );
     };
 
-    if(user === 409) {
+    if (user === 409) {
       return new Result().handler(
         'ERROR',
         HttpStatusClientError.Conflict,

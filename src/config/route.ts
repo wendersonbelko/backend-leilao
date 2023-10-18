@@ -1,19 +1,16 @@
 import { Router } from 'express';
-import { authController } from '../module/auth/auth.controller';
+import { AuctionRouter } from '../module/auction/auction.route';
+import { RoleRouter } from '../module/role/role.route';
+import { BidRouter } from '../module/bid/bid.route';
+import { CategoryRouter } from '../module/category/category.route';
+import { AuthRouter } from '../module/auth/auth.route';
 
-interface IRoutes {
-    prefix: string
-    controllers: Router[]
-}
+const router = Router();
 
-const route = Router();
+router.use('/auction', AuctionRouter);
+router.use('/role', RoleRouter);
+router.use('/bid', BidRouter);
+router.use('/category', CategoryRouter);
+router.use('/auth', AuthRouter);
 
-export const Routes: IRoutes[] = [
-    {
-        prefix: '/auth',
-        controllers: [
-          route.post('/login', authController.login),
-          route.post('/register', authController.register)
-        ]
-    }
-];
+export { router };

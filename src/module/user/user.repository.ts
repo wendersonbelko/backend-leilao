@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, User } from '@prisma/client'
 
 export class UserRepository {
   private prisma: PrismaClient;
@@ -7,7 +7,7 @@ export class UserRepository {
     this.prisma = new PrismaClient();
   }
 
-  public async FindOrCreate(payload: User.User) {
+  public async FindOrCreate(payload: Partial<User>) {
     const findedUser = await this.prisma.user.findUnique({
       where: {
         email: payload.email
@@ -24,11 +24,20 @@ export class UserRepository {
         name: payload.name,
         email: payload.email,
         email_verified: payload.email_verified,
-        locale: payload.locale,
-        picture: payload.picture
+        picture: payload.picture,
       }
     })
 
     return createdUser
+  }
+
+  public async FindByUsername(username: string) {
+    const findedUser = await this.prisma.user.findUnique({
+      where: {
+        username
+      }
+    })
+
+    return findedUser
   }
 }

@@ -3,6 +3,7 @@ import { apiConnectionAuth0 } from "../../config/axios";
 import { environment } from "../../config/environment";
 import { AuthRepository } from "./auth.repository";
 import { IUserLogin, IUserRegister } from "../../validator/user.validator";
+import { User } from "@prisma/client";
 
 export class AuthService {
   private authRepository: AuthRepository;
@@ -25,10 +26,11 @@ export class AuthService {
     return token;
   }
 
-  public generateTokenJWT = (token: any) => {
+  public generateTokenJWT = (token: any, user: User) => {
+    console.log(token.data)
     const jwtToken = jwt.sign({
       id: token.data.id_token,
-      email: token.data.email,
+      user: user,
     }, environment.JWT_SECRET!, {
       expiresIn: '1h',
     });
