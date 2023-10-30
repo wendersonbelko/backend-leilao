@@ -31,12 +31,23 @@ class AuthController {
 
     const token = this.authService.generateTokenJWT(tokenAuth0, user!);
 
+    const resultFormat = {
+      token: token,
+      user: {
+        name: user?.name,
+        username: user?.username,
+        email: user?.email,
+        picture: user?.picture,
+        email_verified: user?.email_verified,
+      }
+    };
+
     res.setHeader('Authorization', `Bearer ${token}`);
 
     return new Result().handler(
       "SUCCESS",
       HttpStatusSuccess.OK,
-      token,
+      resultFormat,
       res
     );
   };

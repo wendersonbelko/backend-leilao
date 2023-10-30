@@ -11,6 +11,7 @@ export const environment: Record<string, any> = {
   JWT_SECRET: process.env.JWT_SECRET,
   AUTH0_TOKEN: "",
   AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE,
+  AUTH0_CERTIFICATE: process.env.AUTH0_CERTIFICATE,
 }
 
 export const alterEnvironment = (key: string, value: string) => {

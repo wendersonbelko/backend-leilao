@@ -7,6 +7,7 @@ export const config = {
   strict: true,
   audience: environment.AUTH0_AUDIENCE,
   issuerBaseURL: environment.AUTH0_DOMAIN,
+  certificate: environment.AUTH0_CERTIFICATE,
 };
 
 const refrashTokenAuth0 = async () => {

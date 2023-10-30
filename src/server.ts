@@ -8,6 +8,7 @@ import { router } from './config/route';
 import { server, app } from './app';
 import { config, cronAuth0 } from "./config/auth0";
 
+// app.set('trust proxy', 1);
 app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

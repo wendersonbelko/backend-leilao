@@ -26,6 +26,10 @@ export class AuctionRepository {
       where: {
         id,
       },
+      include: {
+        AuctionImage: true,
+        Category: true,
+      },
     });
   }
 
@@ -47,7 +51,12 @@ export class AuctionRepository {
   }
 
   public listAuction() {
-    const result = this.prisma.auction.findMany();
+    const result = this.prisma.auction.findMany({
+      include: {
+        AuctionImage: true,
+        Category: true,
+      }
+    });
     return result
   }
 }

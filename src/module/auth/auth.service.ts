@@ -27,7 +27,6 @@ export class AuthService {
   }
 
   public generateTokenJWT = (token: any, user: User) => {
-    console.log(token.data)
     const jwtToken = jwt.sign({
       id: token.data.id_token,
       user: user,
